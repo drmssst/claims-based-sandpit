@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using WebApp.Data;
 using WebApp.Models;
 using WebApp.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace WebApp
 {
@@ -39,6 +41,11 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -59,6 +66,8 @@ namespace WebApp
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            var options = new RewriteOptions().AddRedirectToHttps();
 
             if (env.IsDevelopment())
             {
