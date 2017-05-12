@@ -14,6 +14,7 @@ using WebApp.Models;
 using WebApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace WebApp
 {
@@ -89,7 +90,11 @@ namespace WebApp
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-
+            app.UseGoogleAuthentication(new GoogleOptions()
+            {
+                ClientId = Configuration["Authentication:Google:ClientID"],
+                ClientSecret = Configuration["Authentication:Google:ClientSecret"]
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
